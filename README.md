@@ -1,38 +1,40 @@
 # 📋 ClipboardFixer
 
-A cross-platform C++ tool that repairs broken clipboard managers. Fixes the frozen/unresponsive Win+V panel on Windows 10/11.
+Fixes the frozen/unresponsive Win+V clipboard panel on Windows 10/11. Also supports macOS and Linux.
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Installation
 
-Clone the repo and build from source.
+Open **Windows Terminal** and run these commands one by one:
 
-**Windows (MSVC - Visual Studio Developer Command Prompt):**
-```cmd
-cl fix_clipboard.cpp /Fe:fix_clipboard.exe /link advapi32.lib shell32.lib
-fix_clipboard.exe
+**1. Install a C++ compiler:**
+```
+winget install -e --id MSYS2.MSYS2
 ```
 
-**Windows (g++ via MinGW/MSYS2):**
-```bash
-g++ fix_clipboard.cpp -o fix_clipboard.exe -ladvapi32 -lshell32
-./fix_clipboard.exe
+**2. Close and reopen Windows Terminal, then set up g++:**
+```
+C:\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-gcc"
 ```
 
-**macOS:**
-```bash
-g++ fix_clipboard.cpp -o fix_clipboard
-./fix_clipboard
+**3. Clone the repo:**
+```
+git clone https://github.com/VortexDQ/ClipboardFixer.git
+cd ClipboardFixer
 ```
 
-**Linux:**
-```bash
-g++ fix_clipboard.cpp -o fix_clipboard
-./fix_clipboard
+**4. Compile:**
+```
+C:\msys64\mingw64\bin\g++.exe fix_clipboard.cpp -o fix_clipboard.exe -ladvapi32 -lshell32
 ```
 
-> **Windows users:** Right-click the `.exe` and select *Run as administrator* for full repairs.
+**5. Run as administrator:**
+```
+Start-Process ./fix_clipboard.exe -Verb RunAs
+```
+
+That's it. Win+V should work after it finishes.
 
 ---
 
@@ -51,14 +53,14 @@ g++ fix_clipboard.cpp -o fix_clipboard
 
 ## 🪟 Windows - What Gets Fixed
 
-The Win+V clipboard panel freezes (opens but won't scroll, click, or respond) when `TextInputHost.exe` gets stuck. Restarting the clipboard service alone does not help because the frozen UI process is still running on top of it.
+The Win+V clipboard panel freezes when `TextInputHost.exe` gets stuck. Restarting the clipboard service alone does not fix it because the frozen UI process is still running on top of it.
 
 The tool fixes this in order:
 
 | Step | Root Cause | Fix Applied |
 |------|-----------|-------------|
 | 1 | Frozen `TextInputHost.exe` UI host | Force-killed via Windows process API |
-| 2 | Corrupt or locked clipboard cache | Cache directory cleared while process is dead |
+| 2 | Corrupt or locked clipboard cache | Cache cleared while process is dead |
 | 3 | Corrupt `cbdhsvc.dll` registration | Re-registered via `regsvr32` |
 | 4 | Stalled clipboard service | Stopped and restarted via Windows Service API |
 | 5 | Registry flag unset | `EnableClipboardHistory` set to `1` in `HKCU` |
@@ -72,7 +74,9 @@ The tool fixes this in order:
 
 ## 🍎 macOS
 
-Restarts the `pboard` pasteboard daemon and clears clipboard contents.
+```bash
+g++ fix_clipboard.cpp -o fix_clipboard && ./fix_clipboard
+```
 
 macOS has no built-in clipboard history. Recommended free options:
 - **[Maccy](https://github.com/p0deje/Maccy)** - lightweight, open source
@@ -82,17 +86,15 @@ macOS has no built-in clipboard history. Recommended free options:
 
 ## 🐧 Linux
 
-What the tool does:
-- Detects X11 vs Wayland session
-- Confirms a clipboard tool is installed (`xclip`, `xsel`, `wl-clipboard`)
-- Restarts Klipper on KDE
-- Advises GNOME users on next steps
+```bash
+g++ fix_clipboard.cpp -o fix_clipboard && ./fix_clipboard
+```
 
 Install a clipboard tool if missing:
 ```bash
 sudo apt install xclip          # X11
 sudo apt install wl-clipboard   # Wayland
-sudo apt install parcellite     # GNOME lightweight manager
+sudo apt install parcellite     # GNOME
 ```
 
 ---
@@ -115,16 +117,6 @@ iOS does not expose system clipboard management to scripts or third-party apps. 
 - Restart the app you're pasting into
 - Restart your device
 - Check Settings, Privacy and Security, Paste from Other Apps
-
----
-
-## 🛠️ Requirements
-
-- C++11 or later (`g++`, `clang++`, or MSVC)
-- Windows: `advapi32` and `shell32` libs (included with any Windows SDK)
-- Linux: `g++` via `sudo apt install build-essential`
-- macOS: Xcode Command Line Tools via `xcode-select --install`
-- Run as Administrator on Windows for full repairs
 
 ---
 
