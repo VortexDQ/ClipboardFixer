@@ -8,7 +8,7 @@ A cross-platform Python script that repairs broken clipboard managers — with a
 
 ```bash
 # Clone
-git clone https://github.com/YOUR_USERNAME/clipboard-fix.git
+git clone https://github.com/VortexDQ/ClipboardFixer.git
 cd clipboard-fix
 
 # Run
