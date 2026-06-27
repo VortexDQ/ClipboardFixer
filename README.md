@@ -8,28 +8,33 @@ Fixes the frozen/unresponsive Win+V clipboard panel on Windows 10/11. Also suppo
 
 Open **Windows Terminal** and run these commands one by one:
 
-**1. Install a C++ compiler:**
+**1. Install Git:**
+```
+winget install -e --id Git.Git
+```
+
+**2. Install a C++ compiler:**
 ```
 winget install -e --id MSYS2.MSYS2
 ```
 
-**2. Close and reopen Windows Terminal, then set up g++:**
+**3. Close and reopen Windows Terminal, then set up g++:**
 ```
 C:\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-gcc"
 ```
 
-**3. Clone the repo:**
+**4. Clone the repo:**
 ```
 git clone https://github.com/VortexDQ/ClipboardFixer.git
 cd ClipboardFixer
 ```
 
-**4. Compile:**
+**5. Compile:**
 ```
 C:\msys64\mingw64\bin\g++.exe fix_clipboard.cpp -o fix_clipboard.exe -ladvapi32 -lshell32
 ```
 
-**5. Run as administrator:**
+**6. Run as administrator:**
 ```
 Start-Process ./fix_clipboard.exe -Verb RunAs
 ```
