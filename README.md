@@ -1,6 +1,6 @@
 # 📋 Clipboard Fix Tool
 
-A cross-platform Python script that repairs broken clipboard managers — with a focus on fixing the **Windows+V crash** on Windows 10/11.
+A cross-platform Python script that repairs broken clipboard managers - with a focus on fixing the **Windows+V crash** on Windows 10/11.
 
 ---
 
