@@ -9,7 +9,7 @@ A cross-platform Python script that repairs broken clipboard managers - with a f
 ```bash
 # Clone
 git clone https://github.com/VortexDQ/ClipboardFixer.git
-cd clipboard-fix
+cd ClipboardFixer
 
 # Run
 python fix_clipboard.py
