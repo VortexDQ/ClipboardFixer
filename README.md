@@ -35,7 +35,7 @@ cd ClipboardFixer
 
 **5. Put the compiler on your PATH, then compile:**
 
-MinGW's `g++` needs `C:\msys64\mingw64\bin` on your PATH — without it, the
+MinGW's `g++` needs `C:\msys64\mingw64\bin` on your PATH without it, the
 compiler's own helper processes fail to load and `g++` exits **with no error
 message at all**. Add it first, then compile:
 
@@ -46,7 +46,7 @@ g++ fix_clipboard.cpp -o fix_clipboard.exe -static -static-libgcc -static-libstd
 
 > **Why `-static ...`?** These flags bundle the C++ runtime into the `.exe` so it
 > has no external DLL dependencies. Without them the build succeeds but the
-> program fails to start with `0xC0000135 (DLL not found)` — especially when run
+> program fails to start with `0xC0000135 (DLL not found)`   especially when run
 > as administrator, because the elevated process can't see your PATH and can't
 > find the MinGW runtime DLLs. The static build runs anywhere, elevated or not.
 
@@ -59,7 +59,7 @@ Start-Process ./fix_clipboard.exe -Verb RunAs
 That's it. Win+V should work after it finishes.
 
 > ⚠️ **Note:** Step 2 (clearing the cache) wipes your current clipboard history,
-> including pinned items. This is expected — it's what unsticks the frozen panel.
+> including pinned items. This is expected   it's what unsticks the frozen panel.
 
 > 🔒 **Locked-down machines:** If your organization enforces AppLocker/WDAC, running
 > an unsigned `.exe` from `%TEMP%` or `%LOCALAPPDATA%` may be blocked
