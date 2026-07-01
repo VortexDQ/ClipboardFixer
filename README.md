@@ -35,7 +35,7 @@ cd ClipboardFixer
 
 **5. Put the compiler on your PATH, then compile:**
 
-MinGW's `g++` needs `C:\msys64\mingw64\bin` on your PATH without it, the
+MinGW's `g++` needs `C:\msys64\mingw64\bin` on your PATH   without it, the
 compiler's own helper processes fail to load and `g++` exits **with no error
 message at all**. Add it first, then compile:
 
@@ -50,13 +50,33 @@ g++ fix_clipboard.cpp -o fix_clipboard.exe -static -static-libgcc -static-libstd
 > as administrator, because the elevated process can't see your PATH and can't
 > find the MinGW runtime DLLs. The static build runs anywhere, elevated or not.
 
-**6. Run as administrator:**
+**6. Run it:**
+
+**If you're a standard (non-admin) user**   just run it normally. Do **not** use
+`Run as administrator`; the UAC prompt would ask for admin credentials you don't
+have. The user-level fix (kill the frozen UI host, clear the cache, set the
+history flag) runs fine without elevation:
+
+```
+./fix_clipboard.exe
+```
+
+**If you're an administrator** and want the full fix (also re-registers the
+clipboard DLL and restarts the clipboard service):
 
 ```
 Start-Process ./fix_clipboard.exe -Verb RunAs
 ```
 
 That's it. Win+V should work after it finishes.
+
+> **Non-admin note:** Steps 3 (re-register DLL) and 4 (restart service) require
+> admin rights and will be skipped when you run without elevation   you'll see a
+> warning for those two, which is normal. The freeze is almost always fixed by
+> the steps that *do* run: killing the stuck `TextInputHost.exe`, clearing the
+> corrupt cache, and confirming the history flag in `HKCU`. If Win+V is still
+> frozen afterward and you can get an admin to run it, the elevated run adds the
+> service restart.
 
 > ⚠️ **Note:** Step 2 (clearing the cache) wipes your current clipboard history,
 > including pinned items. This is expected   it's what unsticks the frozen panel.
