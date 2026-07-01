@@ -9,37 +9,62 @@ Fixes the frozen/unresponsive Win+V clipboard panel on Windows 10/11. Also suppo
 Open **Windows Terminal** and run these commands one by one:
 
 **1. Install Git:**
+
 ```
 winget install -e --id Git.Git
 ```
 
 **2. Install a C++ compiler:**
+
 ```
 winget install -e --id MSYS2.MSYS2
 ```
 
 **3. Close and reopen Windows Terminal, then set up g++:**
+
 ```
 C:\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-x86_64-gcc"
 ```
 
 **4. Clone the repo:**
+
 ```
 git clone https://github.com/VortexDQ/ClipboardFixer.git
 cd ClipboardFixer
 ```
 
-**5. Compile:**
-```
-C:\msys64\mingw64\bin\g++.exe fix_clipboard.cpp -o fix_clipboard.exe -ladvapi32 -lshell32
+**5. Put the compiler on your PATH, then compile:**
+
+MinGW's `g++` needs `C:\msys64\mingw64\bin` on your PATH — without it, the
+compiler's own helper processes fail to load and `g++` exits **with no error
+message at all**. Add it first, then compile:
+
+```powershell
+$env:Path = "C:\msys64\mingw64\bin;$env:Path"
+g++ fix_clipboard.cpp -o fix_clipboard.exe -static -static-libgcc -static-libstdc++ -ladvapi32 -lshell32
 ```
 
+> **Why `-static ...`?** These flags bundle the C++ runtime into the `.exe` so it
+> has no external DLL dependencies. Without them the build succeeds but the
+> program fails to start with `0xC0000135 (DLL not found)` — especially when run
+> as administrator, because the elevated process can't see your PATH and can't
+> find the MinGW runtime DLLs. The static build runs anywhere, elevated or not.
+
 **6. Run as administrator:**
+
 ```
 Start-Process ./fix_clipboard.exe -Verb RunAs
 ```
 
 That's it. Win+V should work after it finishes.
+
+> ⚠️ **Note:** Step 2 (clearing the cache) wipes your current clipboard history,
+> including pinned items. This is expected — it's what unsticks the frozen panel.
+
+> 🔒 **Locked-down machines:** If your organization enforces AppLocker/WDAC, running
+> an unsigned `.exe` from `%TEMP%` or `%LOCALAPPDATA%` may be blocked
+> (*"application control policy has blocked this file"*). Compile and run from the
+> cloned repo folder (as above) rather than a temp directory.
 
 ---
 
@@ -96,6 +121,7 @@ g++ fix_clipboard.cpp -o fix_clipboard && ./fix_clipboard
 ```
 
 Install a clipboard tool if missing:
+
 ```bash
 sudo apt install xclip          # X11
 sudo apt install wl-clipboard   # Wayland
